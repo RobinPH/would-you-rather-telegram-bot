@@ -1,7 +1,7 @@
 import TelegramBot, { ReplyKeyboardMarkup, KeyboardButton, Message, Chat, ForceReply } from 'node-telegram-bot-api';
 import { Questions, Question, LoadedQuestions } from './components/Question';
 import { doesChannelQuestionsExists, createChannelQuestions, addNewQuestionToChannel, getChannelQuestions } from './api/database';
-import { SUGGESTION, INVALID, ADDED_SUCCESSFUL, BotSetting, defaultSettings } from './utils/constants';
+import { BotSetting, defaultSettings } from './utils/constants';
 import { getDefaultQuestions } from './api/database';
 
 let preloadedQuestions: LoadedQuestions;
@@ -9,6 +9,7 @@ let preloadedQuestions: LoadedQuestions;
 export const ratherBot = async(token: string, bot_id: string, settings: BotSetting = defaultSettings) => {
   // 0 is the ID for default questions.
   // The rest are Channel ID.
+  settings = { ...defaultSettings, ...settings };
   preloadedQuestions = new LoadedQuestions({ 0: { questions: await getDefaultQuestions(settings.RegExp!, settings.questionData!) } })
 
   const bot = new TelegramBot(token, { polling: true });
@@ -49,14 +50,15 @@ export const ratherBot = async(token: string, bot_id: string, settings: BotSetti
   bot.onText(/^(\/WouldYouRatherSuggest|\/WYRSuggest|\/WYRS)/i, (msg) => {
     const channelId = msg.chat.id;
 
-    bot.sendMessage(channelId, SUGGESTION, {
+    bot.sendMessage(channelId, settings.messages!.SUGGESTION!, {
       parse_mode: "Markdown",
       reply_to_message_id: msg.message_id,
     })
   })
 
   bot.on('message', (msg) => {
-    suggestionHandler(bot, msg, bot_id, settings, [SUGGESTION, INVALID, ADDED_SUCCESSFUL])
+    const { SUGGESTION, INVALID, ADDED_SUCCESSFUL } = settings.messages!;
+    suggestionHandler(bot, msg, bot_id, settings, [SUGGESTION!, INVALID!, ADDED_SUCCESSFUL!])
   })
 }
 
@@ -64,6 +66,8 @@ async function suggestionHandler(bot: TelegramBot, msg: Message, bot_id: string,
   if (!msg.reply_to_message) return
   if (!suggestionQuestion.some(message => msg.reply_to_message!.text === message.replace(/[\*\_]/g, ""))) return
   if (msg.reply_to_message.from!.id !== parseInt(bot_id)) return
+
+  const { INVALID, ADDED_SUCCESSFUL } = settings.messages!;
 
   const channelId: Chat['id'] = msg.chat.id;
   const newQuestion = new Question(msg.text!, settings.RegExp!, settings.questionData!)
@@ -82,9 +86,9 @@ async function suggestionHandler(bot: TelegramBot, msg: Message, bot_id: string,
       preloadedQuestions.addNewQuestionToChannel(newQuestion, channelId);
     }
 
-    replyMessage = addedSuccessful ? ADDED_SUCCESSFUL : INVALID
+    replyMessage = addedSuccessful ? ADDED_SUCCESSFUL! : INVALID!
   } else {
-    replyMessage = INVALID;
+    replyMessage = INVALID!;
   }
 
   bot.sendMessage(channelId, replyMessage, {
