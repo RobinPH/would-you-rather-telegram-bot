@@ -56,11 +56,17 @@ interface BotSetting {
 }
 ```
 `EXAMPLES` Array of Examples for `/WouldYouRatherSuggest`.
+
 `INVALID` Message when User inputted wrong format in `/WouldYouRatherSuggest`.
+
 `FORMAT` Message for format in `/WouldYouRatherSuggest`.
+
 `SUGGESTION` Message for `/WouldYouRatherSuggest`.
+
 `ADDED_SUCCESSFUL` Message for `/WouldYouRatherSuggest` when new question is added successfully.
 
+
 `RegExp` Used to capture `Option1` and `Option2`.
+
 
 `optionsIndex` Array of number (index) of options in `RegExpMatchArray`.
