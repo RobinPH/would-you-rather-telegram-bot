@@ -20,9 +20,7 @@ export const getDefaultQuestions = () => {
         const { questions } = (result[0] as unknown as DQuestions);
         resolve(new Questions(questions));
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(() => { })
   })
 }
 
@@ -32,9 +30,7 @@ const getLatestQuestions = () => {
       .then(result => {
         resolve([result[0], result[0]._id as string]);
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(() => { })
   })
 }
 
@@ -43,10 +39,10 @@ export const addNewQuestion = (questionString: string) => {
     const [{ questions }, id] = await getLatestQuestions()
 
     QuestionsModel.findByIdAndUpdate({ _id: id }, { questions: [...questions, questionString] })
-      .then((res) => {
+      .then(() => {
         resolve(true)
       })
-      .catch(err => {
+      .catch(() => {
         resolve(false)
       });
   })
@@ -58,9 +54,7 @@ const getLatestQuestionsInChannel = (channelId: Chat['id']) => {
       .then(result => {
         resolve([result[0], result[0]._id as string]);
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(() => { })
   })
 }
 
@@ -70,11 +64,9 @@ export const addNewQuestionToChannel = (questionString: string, channelId: Chat[
     console.log(`${ channelId }`)
     ChannelModel.findOneAndUpdate({ "channelId": channelId.toString() }, { questions: [...questions, questionString] })
       .then((res) => {
-        console.log(res, "new")
         resolve(true)
       })
-      .catch(err => {
-        console.log(err)
+      .catch(() => {
         resolve(false)
       });
   })
@@ -91,7 +83,7 @@ export const createChannelQuestions = (channelId: Chat['id']) => {
       .then(() => {
         resolve(true)
       })
-      .catch((err) => {
+      .catch(() => {
         resolve(false)
       })
   })
@@ -100,14 +92,14 @@ export const createChannelQuestions = (channelId: Chat['id']) => {
 export const doesChannelQuestionsExists = (channelId: Chat['id']) => {
   return new Promise<boolean>((resolve) => {
     ChannelModel.find({ "channelId": channelId.toString() })
-      .then(foo => {
-        if (foo.length === 1) {
+      .then(result => {
+        if (result.length === 1) {
           resolve(true)
         } else {
           resolve(false)
         }
       })
-      .catch(err => {
+      .catch(() => {
         console.log("Channel Question does not Exists")
         resolve(false)
       })
@@ -117,10 +109,10 @@ export const doesChannelQuestionsExists = (channelId: Chat['id']) => {
 export const getChannelQuestions = (channelId: Chat['id']) => {
   return new Promise<DChannel["questions"]>((resolve) => {
     ChannelModel.find({ "channelId": channelId.toString() })
-    .then(foo => {
-      resolve(foo[0].questions)
+    .then(channelQuestions => {
+      resolve(channelQuestions[0].questions)
     })
-    .catch(err => {
+    .catch(() => {
       resolve([])
     })
   })
