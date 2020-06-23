@@ -1,7 +1,7 @@
 import { Chat } from 'node-telegram-bot-api';
 
 interface storedQuestions {
-  [channelId: number]: Questions,
+  [channelId: number]: { questions: Questions; remainingQuestions?: Array<number>; },
 }
 export class Question {
   private rawQuestion: string;
@@ -108,25 +108,55 @@ export class LoadedQuestions {
   }
 
   getRandomQuestion(channelId: Chat["id"]) {
-    const lengthDefault = this.storedQuestions[0].length;
-    const lengthChannel = this.storedQuestions[channelId].length;
-    const length = lengthDefault + lengthChannel;
+    const channelQuestions = this.storedQuestions[channelId];
+    let remainingQuestions = channelQuestions.remainingQuestions!;
+    let remainingQuestionsLength = remainingQuestions.length;
 
-    const randomIndex = Math.floor(Math.random() * length)
-    const isChannel = randomIndex >= lengthDefault;
+    if (remainingQuestionsLength === 0) {
+      channelQuestions.remainingQuestions = this.generateRemainingQuestions(channelQuestions.questions);
+      remainingQuestions = channelQuestions.remainingQuestions!;
+      remainingQuestionsLength = channelQuestions.remainingQuestions.length;
+    }
 
-    return this.storedQuestions[isChannel ? channelId : 0].getQuestions()[isChannel ? randomIndex - lengthDefault : randomIndex]
+    const lengthDefault = this.storedQuestions[0].questions.length;
+    const randomIndex = Math.floor(Math.random() * remainingQuestionsLength);
+    const questionPosition = remainingQuestions[randomIndex];
+    const isChannelQuestion = questionPosition >= lengthDefault;
+
+    const id = isChannelQuestion ? channelId : 0;
+    
+    remainingQuestions.splice(randomIndex, 1)
+
+    return this.storedQuestions[id].questions.getQuestions()[isChannelQuestion ? questionPosition - lengthDefault : questionPosition]
   }
 
   addNewQuestionToChannel(question: Question, channelId: Chat["id"]) {
-    this.storedQuestions[channelId].addQuestion(question)
+    this.storedQuestions[channelId].questions.addQuestion(question)
   }
 
   addChannelQuestions(questions: Questions, channelId: Chat["id"]) {
-    this.storedQuestions[channelId] = questions;
+    const remainingQuestions = this.generateRemainingQuestions(questions);
+
+    this.storedQuestions[channelId] = { questions, remainingQuestions };
+  }
+
+  private generateRemainingQuestions(questions: Questions) {
+    const remainingQuestions: Array<number> = new Array();
+    const lengthCombined = this.storedQuestions[0].questions.length + questions.length;
+
+    for (let i = 0; i < lengthCombined; i++) {
+      remainingQuestions.push(i);
+    }
+
+    return remainingQuestions;
   }
 
   getStoredQuestions() {
     return this.storedQuestions;
+  }
+
+  length(channelId: Chat["id"]) {
+    if (!this.storedQuestions[channelId]) return
+    return this.storedQuestions[0].questions.length + this.storedQuestions[channelId].questions.length;
   }
 }

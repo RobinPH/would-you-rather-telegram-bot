@@ -6,7 +6,9 @@ import { SUGGESTION, INVALID, ADDED_SUCCESSFUL } from './utils/constants';
 let preloadedQuestions: LoadedQuestions;
 
 export const ratherBot = (token: string, defaultQuestions: Questions) => {
-  preloadedQuestions = new LoadedQuestions({ 0: defaultQuestions })
+  // 0 is the ID for default questions.
+  // The rest are Channel ID.
+  preloadedQuestions = new LoadedQuestions({ 0: { questions: defaultQuestions } })
 
   const bot = new TelegramBot(token, { polling: true });
 
