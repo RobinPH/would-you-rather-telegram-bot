@@ -4,7 +4,7 @@ import { ratherBot } from './ratherbot';
 require('dotenv').config();
 
 (async() => {
-  await connectDB(process.env.ATLAS_URI!);
+  await connectDB(process.env.MONGODB_URI!);
   
   const defaultQuestions = await getDefaultQuestions();
   ratherBot(process.env.TOKEN!, defaultQuestions);
