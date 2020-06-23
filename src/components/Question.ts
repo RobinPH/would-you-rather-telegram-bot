@@ -1,5 +1,8 @@
 import { Chat } from 'node-telegram-bot-api';
 
+interface storedQuestions {
+  [channelId: number]: Questions,
+}
 export class Question {
   private rawQuestion: string;
   private question: string;
@@ -87,13 +90,7 @@ export class Questions {
   addQuestion(question: Question) {
     this.questions.push(question);
   }
-
-  randomQuestion() {
-    const length = this.questions.length;
-    const random = Math.floor(Math.random() * length);
-    return this.questions[random]
-  }
-
+  
   getQuestions() {
     return this.questions;
   }
@@ -101,10 +98,6 @@ export class Questions {
   get length() {
     return this.questions.length;
   }
-}
-
-interface storedQuestions {
-  [name: number]: Questions,
 }
 
 export class LoadedQuestions {
