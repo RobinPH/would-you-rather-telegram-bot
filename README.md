@@ -7,10 +7,14 @@
 - Suggested questions are only visible to the channel/user where it was suggested.
 
 ## Usage
-| Command                 | Alias      | Description                                                                                             |
-| -------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
-| `/WouldYouRather`         | `/WYR`  | Send a random **Would You Rather** question                          |
-| `/WouldYouRatherSuggest`  | `/WYRS /WYRSuggest`  | Sends a SUGGESTION message. Reply to that message to submit your **Would You Rather** question                                               |
+| Command (Case-insensitive) | Alias                 | Description                                                                                                                                                                                                                                                  |
+|----------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/WouldYouRather`          | `/WYR`                | Send a random **Would You Rather** question.                                                                                                                                                                                                                 |
+| `/WouldYouRather`          | `/WYRSuggest` `/WYRS` | Send a **SUGGESTION** message. Replay to that message to submit your suggestion.   |                                          |
+## Suggestion Format
+&nbsp;&nbsp;&nbsp;&nbsp;Format:&nbsp;&nbsp;&nbsp;&nbsp; **(Would you rather)? `Option1` or `Option2`**
+&nbsp;&nbsp;&nbsp;&nbsp;Examples: **Would you rather `be free` or `be totally safe`?**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **`Be free` or `be totally safe`?**
 
 ## Clone
 ```sh
