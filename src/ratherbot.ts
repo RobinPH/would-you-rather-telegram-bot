@@ -19,6 +19,10 @@ export const ratherBot = async(token: string, settings: BotSetting = defaultSett
     if (!(channelId in preloadedQuestions.getStoredQuestions())) {
       const channelQuestions = new Questions(await getChannelQuestions(channelId), settings.RegExp!, settings.questionData!);
       preloadedQuestions.addChannelQuestions(channelQuestions, channelId);
+      
+      bot.getChat(channelId).then(channel => {
+        console.log(`Serving: ${ channel.id } ${ channel.title }`)
+      })
     }
 
     const randomQuestion = preloadedQuestions.getRandomQuestion(channelId);
