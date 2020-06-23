@@ -63,7 +63,6 @@ const getLatestQuestionsInChannel = (channelId: Chat['id']) => {
 export const addNewQuestionToChannel = (questionString: string, channelId: Chat['id']) => {
   return new Promise<boolean>(async(resolve) => {
     const [{ questions }, id] = await getLatestQuestionsInChannel(channelId)
-    console.log(`${ channelId }`)
     ChannelModel.findOneAndUpdate({ "channelId": channelId.toString() }, { questions: [...questions, questionString] })
       .then((res) => {
         resolve(true)
