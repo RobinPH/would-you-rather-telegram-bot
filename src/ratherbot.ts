@@ -4,7 +4,6 @@ import { doesChannelQuestionsExists, createChannelQuestions, addNewQuestionToCha
 import { SUGGESTION, INVALID, ADDED_SUCCESSFUL } from './utils/constants';
 
 let preloadedQuestions: LoadedQuestions;
-const currentLoadedChannels: Set<Chat["id"]> = new Set();
 
 export const ratherBot = (token: string, defaultQuestions: Questions) => {
   preloadedQuestions = new LoadedQuestions({ 0: defaultQuestions })
