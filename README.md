@@ -28,6 +28,11 @@ $ npm run start
 ## Setup
 | Environment Variable                 | Description      |
 | -------------------- | --------- | 
-| `ATLAS_URI`         | MongoDB URI  | 
+| `MONGODB_URI`         | MongoDB URI  | 
 | `TOKEN`         | Authorization Token `/token@BotFather`  | 
 | `BOT_ID`  | First 10 numbers of `TOKEN`  |
+
+##### Importing Default Questions
+ - Make `.txt` file where each line is a question with the same format as **Suggestion Format**.
+ - Run `node importDefault.js [txt path] [MONGODB_URI]`. Wherein `txt path` is the path to the `.txt` file, and `MONGODB_URI` is the MongoDB URI.
+ - **NOTE:** `importDefault.js` splits the `.txt` file with `\r\n`.
