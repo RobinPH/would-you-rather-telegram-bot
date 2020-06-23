@@ -4,14 +4,14 @@
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "tsc & nodenv . --env ./.env"
+    "start": "tsc & node ./dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "mongoose": "^5.9.19",
-    "node-env-run": "^3.0.2",
     "node-telegram-bot-api": "^0.50.0",
     "typescript": "^3.9.5"
   },
