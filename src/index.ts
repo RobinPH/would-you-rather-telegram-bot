@@ -5,5 +5,5 @@ require('dotenv').config();
 
 (async() => {
   await connectDB(process.env.MONGODB_URI!);
-  ratherBot(process.env.TOKEN!);
+  ratherBot(process.env.TOKEN!, process.env.BOT_ID!);
 })();

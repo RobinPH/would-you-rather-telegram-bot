@@ -52,7 +52,7 @@ export const addNewQuestion = (questionString: string) => {
 
 const getLatestQuestionsInChannel = (channelId: Chat['id']) => {
   return new Promise<[DChannel, string]>((resolve) => {
-    ChannelModel.find({}).sort({ _id: -1 }).limit(1)
+    ChannelModel.find({ channelId: channelId.toString() })
       .then(result => {
         resolve([result[0], result[0]._id as string]);
       })
@@ -63,7 +63,12 @@ const getLatestQuestionsInChannel = (channelId: Chat['id']) => {
 export const addNewQuestionToChannel = (questionString: string, channelId: Chat['id']) => {
   return new Promise<boolean>(async(resolve) => {
     const [{ questions }, id] = await getLatestQuestionsInChannel(channelId)
-    ChannelModel.findOneAndUpdate({ "channelId": channelId.toString() }, { questions: [...questions, questionString] })
+    ChannelModel.findOneAndUpdate(
+      { channelId: channelId.toString() },
+      { $set: {
+          questions: [...questions, questionString]
+        } 
+      })
       .then((res) => {
         resolve(true)
       })
@@ -92,7 +97,7 @@ export const createChannelQuestions = (channelId: Chat['id']) => {
 
 export const doesChannelQuestionsExists = (channelId: Chat['id']) => {
   return new Promise<boolean>((resolve) => {
-    ChannelModel.find({ "channelId": channelId.toString() })
+    ChannelModel.find({ channelId: channelId.toString() })
       .then(result => {
         if (result.length === 1) {
           resolve(true)
@@ -109,7 +114,7 @@ export const doesChannelQuestionsExists = (channelId: Chat['id']) => {
 
 export const getChannelQuestions = (channelId: Chat['id']) => {
   return new Promise<DChannel["questions"]>((resolve) => {
-    ChannelModel.find({ "channelId": channelId.toString() })
+    ChannelModel.find({ channelId: channelId.toString() })
     .then(channelQuestions => {
       resolve(channelQuestions[0].questions)
     })

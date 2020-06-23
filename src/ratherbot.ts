@@ -6,7 +6,7 @@ import { getDefaultQuestions } from './api/database';
 
 let preloadedQuestions: LoadedQuestions;
 
-export const ratherBot = async(token: string, settings: BotSetting = defaultSettings) => {
+export const ratherBot = async(token: string, bot_id: string, settings: BotSetting = defaultSettings) => {
   // 0 is the ID for default questions.
   // The rest are Channel ID.
   preloadedQuestions = new LoadedQuestions({ 0: { questions: await getDefaultQuestions(settings.RegExp!, settings.questionData!) } })
@@ -19,7 +19,7 @@ export const ratherBot = async(token: string, settings: BotSetting = defaultSett
     if (!(channelId in preloadedQuestions.getStoredQuestions())) {
       const channelQuestions = new Questions(await getChannelQuestions(channelId), settings.RegExp!, settings.questionData!);
       preloadedQuestions.addChannelQuestions(channelQuestions, channelId);
-      
+
       bot.getChat(channelId).then(channel => {
         console.log(`Serving: ${ channel.id } ${ channel.title }`)
       })
@@ -56,14 +56,14 @@ export const ratherBot = async(token: string, settings: BotSetting = defaultSett
   })
 
   bot.on('message', (msg) => {
-    suggestionHandler(bot, msg, settings, [SUGGESTION, INVALID, ADDED_SUCCESSFUL])
+    suggestionHandler(bot, msg, bot_id, settings, [SUGGESTION, INVALID, ADDED_SUCCESSFUL])
   })
 }
 
-async function suggestionHandler(bot: TelegramBot, msg: Message, settings: BotSetting, suggestionQuestion: Array<string>) {
+async function suggestionHandler(bot: TelegramBot, msg: Message, bot_id: string, settings: BotSetting, suggestionQuestion: Array<string>) {
   if (!msg.reply_to_message) return
   if (!suggestionQuestion.some(message => msg.reply_to_message!.text === message.replace(/[\*\_]/g, ""))) return
-  if (msg.reply_to_message.from!.id !== parseInt(process.env.BOT_ID!)) return
+  if (msg.reply_to_message.from!.id !== parseInt(bot_id)) return
 
   const channelId: Chat['id'] = msg.chat.id;
   const newQuestion = new Question(msg.text!, settings.RegExp!, settings.questionData!)
