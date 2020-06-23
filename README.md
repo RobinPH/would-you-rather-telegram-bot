@@ -10,11 +10,13 @@
 | Command (Case-insensitive) | Alias                 | Description                                                                                                                                                                                                                                                  |
 |----------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `/WouldYouRather`          | `/WYR`                | Send a random **Would You Rather** question.                                                                                                                                                                                                                 |
-| `/WouldYouRather`          | `/WYRSuggest` `/WYRS` | Send a **SUGGESTION** message. Replay to that message to submit your suggestion.   |                                          |
+| `/WouldYouRather`          | `/WYRSuggest` `/WYRS` | Send a **SUGGESTION** message. Replay to that message to submit your suggestion. See format in the next section.   |                                          |
 ## Suggestion Format
-&nbsp;&nbsp;&nbsp;&nbsp;Format:&nbsp;&nbsp;&nbsp;&nbsp; **(Would you rather)? `Option1` or `Option2`**
+&nbsp;&nbsp;&nbsp;&nbsp;Format:&nbsp;&nbsp;&nbsp; **(Would you rather)? `Option1` or `Option2`**
+
 &nbsp;&nbsp;&nbsp;&nbsp;Examples: **Would you rather `be free` or `be totally safe`?**
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **`Be free` or `be totally safe`?**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **`Be free` or `be totally safe`?**
 
 ## Clone
 ```sh
