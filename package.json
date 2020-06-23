@@ -1,0 +1,23 @@
+{
+  "name": "WouldYouRather",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "start": "tsc & nodenv ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^5.9.19",
+    "node-env-run": "^3.0.2",
+    "node-telegram-bot-api": "^0.50.0",
+    "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.7.27",
+    "@types/node-telegram-bot-api": "^0.40.3",
+    "nodemon": "^2.0.4"
+  }
+}
