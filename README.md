@@ -6,7 +6,7 @@
 | Command                 | Alias      | Description                                                                                             |
 | -------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
 | `/WouldYouRather`         | `/WYR`  | Send a random **Would You Rather** question                          |
-| `/WouldYouRatherSuggest`  | `/WYRS`  | Sends a SUGGESTION message. Reply to that message to submit your **Would You Rather** question                                               |
+| `/WouldYouRatherSuggest`  | `/WYRS /WYRSuggest`  | Sends a SUGGESTION message. Reply to that message to submit your **Would You Rather** question                                               |
 
 ## Clone
 ```sh
