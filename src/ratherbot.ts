@@ -1,14 +1,15 @@
 import TelegramBot, { ReplyKeyboardMarkup, KeyboardButton, Message, Chat, ForceReply } from 'node-telegram-bot-api';
 import { Questions, Question, LoadedQuestions } from './components/Question';
 import { doesChannelQuestionsExists, createChannelQuestions, addNewQuestionToChannel, getChannelQuestions } from './api/database';
-import { SUGGESTION, INVALID, ADDED_SUCCESSFUL } from './utils/constants';
+import { SUGGESTION, INVALID, ADDED_SUCCESSFUL, BotSetting, defaultSettings } from './utils/constants';
+import { getDefaultQuestions } from './api/database';
 
 let preloadedQuestions: LoadedQuestions;
 
-export const ratherBot = (token: string, defaultQuestions: Questions) => {
+export const ratherBot = async(token: string, settings: BotSetting = defaultSettings) => {
   // 0 is the ID for default questions.
   // The rest are Channel ID.
-  preloadedQuestions = new LoadedQuestions({ 0: { questions: defaultQuestions } })
+  preloadedQuestions = new LoadedQuestions({ 0: { questions: await getDefaultQuestions(settings.RegExp!, settings.questionData!) } })
 
   const bot = new TelegramBot(token, { polling: true });
 
@@ -16,7 +17,7 @@ export const ratherBot = (token: string, defaultQuestions: Questions) => {
     const channelId = msg.chat.id;
 
     if (!(channelId in preloadedQuestions.getStoredQuestions())) {
-      const channelQuestions = new Questions(await getChannelQuestions(channelId));
+      const channelQuestions = new Questions(await getChannelQuestions(channelId), settings.RegExp!, settings.questionData!);
       preloadedQuestions.addChannelQuestions(channelQuestions, channelId);
     }
 
@@ -51,20 +52,20 @@ export const ratherBot = (token: string, defaultQuestions: Questions) => {
   })
 
   bot.on('message', (msg) => {
-    suggestionHandler(bot, msg, [SUGGESTION, INVALID, ADDED_SUCCESSFUL])
+    suggestionHandler(bot, msg, settings, [SUGGESTION, INVALID, ADDED_SUCCESSFUL])
   })
 }
 
-async function suggestionHandler(bot: TelegramBot, msg: Message, suggestionQuestion: Array<string>) {
+async function suggestionHandler(bot: TelegramBot, msg: Message, settings: BotSetting, suggestionQuestion: Array<string>) {
   if (!msg.reply_to_message) return
   if (!suggestionQuestion.some(message => msg.reply_to_message!.text === message.replace(/[\*\_]/g, ""))) return
   if (msg.reply_to_message.from!.id !== parseInt(process.env.BOT_ID!)) return
 
   const channelId: Chat['id'] = msg.chat.id;
-  const newQuestion = new Question(msg.text!)
+  const newQuestion = new Question(msg.text!, settings.RegExp!, settings.questionData!)
   let replyMessage: string = '';
 
-  if (newQuestion.isValidQuestion()) {
+  if (newQuestion.isValidQuestion(settings.RegExp!, settings.questionData!)) {
     if (!(await doesChannelQuestionsExists(channelId))) {
       await createChannelQuestions(channelId);
     }
@@ -72,7 +73,7 @@ async function suggestionHandler(bot: TelegramBot, msg: Message, suggestionQuest
     const addedSuccessful = addNewQuestionToChannel(msg.text!, channelId);
     if (addedSuccessful) {
       if (!(channelId in preloadedQuestions.getStoredQuestions())) {
-        preloadedQuestions.addChannelQuestions(new Questions([]), channelId)
+        preloadedQuestions.addChannelQuestions(new Questions([], settings.RegExp!, settings.questionData!), channelId)
       }
       preloadedQuestions.addNewQuestionToChannel(newQuestion, channelId);
     }

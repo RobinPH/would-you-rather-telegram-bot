@@ -1,4 +1,5 @@
 import { Chat } from 'node-telegram-bot-api';
+import { QuestionData } from '../utils/constants';
 
 interface storedQuestions {
   [channelId: number]: { questions: Questions; remainingQuestions?: Array<number>; },
@@ -11,9 +12,9 @@ export class Question {
   private option2: string;
   private valid: boolean;
 
-  constructor(rawQuestion: string, re?: RegExp) {
+  constructor(rawQuestion: string, re: RegExp, questionData: QuestionData) {
     this.rawQuestion = rawQuestion
-    this.valid = this.isValidQuestion();
+    this.valid = this.isValidQuestion(re, questionData);
 
     let question: string = '';
     let questionMarkup: string = '';
@@ -21,7 +22,7 @@ export class Question {
     let option2: string = '';
 
     if (this.valid) {
-      const { question: q, questionMarkup: qm, option1: o1, option2: o2 } = this.parseQuestion(re);
+      const { question: q, questionMarkup: qm, option1: o1, option2: o2 } = this.parseQuestion(re, questionData);
       question = q;
       questionMarkup = qm;
       option1 = o1;
@@ -34,24 +35,29 @@ export class Question {
     this.option2 = option2;
   }
 
-  private parseQuestion(re?: RegExp) {
-    const captured = this.rawQuestion.match(re || /^(\d+\.\s)?(Would\syou\srather\s)?(.+)\sor\s(.+)(\.|\?)?$/i)!;
-    const option2 = captured[4].replace(/(\.|\?)$/i, "");
+  private parseQuestion(re: RegExp, questionData: QuestionData) {
+    const optionsIndex = questionData.optionsIndex!;
+
+    const captured = this.rawQuestion.match(re!)!;
+    const option1 = captured[optionsIndex[0]];
+    const option2 = captured[optionsIndex[1]].replace(/(\.|\?)$/, "")
+
     return {
       question: this.rawQuestion.replace(/^(\d+\.\s)/, ""),
-      questionMarkup: `${ captured[2] || '' }*${ captured[3] }* or *${ option2 }*${ captured[4].replace(option2, "") }`,
-      option1: captured[3],
+      questionMarkup: this.rawQuestion.replace(option1, `*${ option1 }*`).replace(option2, `*${ option2 }*`),
+      option1: captured[optionsIndex[0]],
       option2: option2,
     };
   }
 
-  isValidQuestion(re?: RegExp) {
-    const captured = this.rawQuestion.match(re || /^(\d+\.\s)?(Would\syou\srather\s)?(.+)\sor\s(.+)(\.|\?)?$/i)!;
+  isValidQuestion(re: RegExp, questionData: QuestionData) {
+    const optionsIndex = questionData.optionsIndex!;
+    const captured = this.rawQuestion.match(re)!;
     
     let isValid: boolean = true;
 
     try {
-      isValid = captured[3] != null && captured[4] != null;
+      isValid = captured[optionsIndex[0]] != null && captured[optionsIndex[1]] != null;
     } catch {
       isValid = false;
     }
@@ -75,14 +81,20 @@ export class Question {
 export class Questions {
   private rawQuestions: Array<string>;
   private questions: Array<Question>;
+  private re: RegExp;
+  private questionData: QuestionData;
 
-  constructor(rawQuestions: Array<string>) {
+  constructor(rawQuestions: Array<string>, re: RegExp, questionData: QuestionData) {
     this.rawQuestions = rawQuestions;
+    this.re = re;
+    this.questionData = questionData;
+    
     this.questions = this.parseQuestions();
   }
 
   private parseQuestions() {
-    const questions = this.rawQuestions.map(question => new Question(question)).filter(question => question.isValidQuestion());
+    const questions = this.rawQuestions.map(question => new Question(question, this.re, this.questionData)).filter(question => question.isValidQuestion(this.re, this.questionData));
+
     console.log(`Preloaded ${ questions.length } questions`);
     return questions;
   }

@@ -5,6 +5,8 @@ import { QuestionsModel, DQuestions } from '../models/questions.models';
 import { ChannelModel, DChannel } from '../models/channel.models';
 import { Questions, Question } from '../components/Question';
 
+import { QuestionData } from '../utils/constants';
+
 export const connectDB = (URI: string) => {
   mongoose.connect(URI, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false });
   const connection = mongoose.connection;
@@ -13,12 +15,12 @@ export const connectDB = (URI: string) => {
   })
 }
 
-export const getDefaultQuestions = () => {
+export const getDefaultQuestions = (re: RegExp, questionData: QuestionData) => {
   return new Promise<Questions>((resolve) => {
     QuestionsModel.find({}).sort({ _id: -1 }).limit(1)
       .then(result => {
         const { questions } = (result[0] as unknown as DQuestions);
-        resolve(new Questions(questions));
+        resolve(new Questions(questions, re, questionData));
       })
       .catch(() => { })
   })
