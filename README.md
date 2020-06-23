@@ -33,6 +33,34 @@ $ npm run start
 | `BOT_ID`  | First 10 numbers of `TOKEN`  |
 
 ##### Importing Default Questions
- - Make `.txt` file where each line is a question with the same format as **Suggestion Format**.
+ - Make `.txt` file where each line is a question with the same format as **Suggestion Format**. _See Example at **./DefaultQuestions/questions.txt**_
  - Run `node importDefault.js [txt path] [MONGODB_URI]`. Wherein `txt path` is the path to the `.txt` file, and `MONGODB_URI` is the MongoDB URI.
  - **NOTE:** `importDefault.js` splits the `.txt` file with `\r\n`.
+
+#### Bot Settings
+```js
+interface QuestionData {
+  optionsIndex?: Array<number>,
+}
+
+interface BotSetting {
+  messages?: {
+    EXAMPLES?: Array<string>;
+    INVALID?: string;
+    FORMAT?: string;
+    SUGGESTION?: string,
+    ADDED_SUCCESSFUL?: string,
+  },
+  RegExp?: RegExp;
+  questionData?: QuestionData;
+}
+```
+`EXAMPLES` Array of Examples for `/WouldYouRatherSuggest`.
+`INVALID` Message when User inputted wrong format in `/WouldYouRatherSuggest`.
+`FORMAT` Message for format in `/WouldYouRatherSuggest`.
+`SUGGESTION` Message for `/WouldYouRatherSuggest`.
+`ADDED_SUCCESSFUL` Message for `/WouldYouRatherSuggest` when new question is added successfully.
+
+`RegExp` Used to capture `Option1` and `Option2`.
+
+`optionsIndex` Array of number (index) of options in `RegExpMatchArray`.
