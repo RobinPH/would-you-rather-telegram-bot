@@ -2,6 +2,10 @@
 
 [![@RatherBotBot](https://i.imgur.com/sFWzmgz.png)](https://t.me/RatherBotBot)
 
+## Info
+- 250 Default **Would You Rather** Questions. _(https://improb.com/would-you-rather-questions/)_
+- Suggested questions are only visible to the channel/user where it was suggested.
+
 ## Usage
 | Command                 | Alias      | Description                                                                                             |
 | -------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
@@ -15,7 +19,9 @@ $ npm i
 $ npm run start
 ```
 
-## Info
-- 250 Default **Would You Rather** Questions. _(https://improb.com/would-you-rather-questions/)_
- - Suggested questions are only visible to the channel/user where it was suggested.
-
+## Setup
+| Environment Variable                 | Description      |
+| -------------------- | --------- | 
+| `ATLAS_URI`         | MongoDB URI  | 
+| `TOKEN`         | Authorization Token `/token@BotFather`  | 
+| `BOT_ID`  | First 10 numbers of `TOKEN`  |
