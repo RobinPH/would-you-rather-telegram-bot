@@ -7,10 +7,11 @@
 - Suggested questions are only visible to the channel/user where it was suggested.
 
 ## Usage
-| Command (Case-insensitive) | Alias                 | Description                                                                                                                                                                                                                                                  |
-|----------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `/WouldYouRather`          | `/WYR`                | Send a random **Would You Rather** question.                                                                                                                                                                                                                 |
-| `/WouldYouRather`          | `/WYRSuggest` `/WYRS` | Send a **SUGGESTION** message. Replay to that message to submit your suggestion. See format in the next section.   |                                          |
+| Command (Case-insensitive) |Parameter | Alias                 | Description                                                                                                                                                                                                                                                  |
+|----------------------------|----------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/WouldYouRather`         | | `/WYR`                | Send a random **Would You Rather** question.                                                                                                                                                                                                                 |
+| `/WouldYouRather`         | | `/WYRSuggest` `/WYRS` | Send a **SUGGESTION** message. Replay to that message to submit your suggestion. See format in the next section.   |                                          |
+| `/WouldYouRatherMerge`         | `ChannelId` | `/WYRMerge` `/WYRM` | Merge Channel Questions to Default Questions. Command must be executed in `MASTER_CONTROL` channel. See Environment Variables below.   |                                          |
 ## Suggestion Format
 &nbsp;&nbsp;&nbsp;&nbsp;Format:&nbsp;&nbsp;&nbsp; **(Would you rather)? `Option1` or `Option2`**
 
@@ -26,11 +27,12 @@ $ npm run start
 ```
 
 ## Setup
-| Environment Variable                 | Description      |
+| Environment Variables                 | Description      |
 | -------------------- | --------- | 
 | `MONGODB_URI`         | MongoDB URI  | 
 | `TOKEN`         | Authorization Token `/token@BotFather`  | 
 | `BOT_ID`  | First 10 numbers of `TOKEN`  |
+| `MASTER_CONTROL`  | `ChannelId` of Group Chat  |
 
 ##### Importing Default Questions
  - Make `.txt` file where each line is a question with the same format as **Suggestion Format**. _See Example at **./DefaultQuestions/questions.txt**_
@@ -50,9 +52,14 @@ interface BotSetting {
     FORMAT?: string;
     SUGGESTION?: string,
     ADDED_SUCCESSFUL?: string,
+    NO_PERMISSION?: string,
+    MERGE_USAGE?: string,
+    MERGE_SUCCESS?: string,
+    MERGE_FAILED?: string,
   },
   RegExp?: RegExp;
   questionData?: QuestionData;
+  masterControl?: number;
 }
 ```
 `EXAMPLES` Array of Examples for `/WouldYouRatherSuggest`.
@@ -65,8 +72,16 @@ interface BotSetting {
 
 `ADDED_SUCCESSFUL` Message for `/WouldYouRatherSuggest` when new question is added successfully.
 
+`NO_PERMISSION` Message for No Permission for `/WouldYouRatherMerge`.
+
+`MERGE_USAGE` Usage Message for `/WouldYouRatherMerge`.
+
+`MERGE_SUCCESS` Message for successful merge.
+
+`MERGE_FAILED` MEssage for failed merge.
 
 `RegExp` Used to capture `Option1` and `Option2`.
 
-
 `optionsIndex` Array of number (index) of options in `RegExpMatchArray`.
+
+`masterControl` Channel Id where `/WouldYouRatherMerge` can only be executed.
